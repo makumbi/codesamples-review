@@ -1,19 +1,34 @@
-Connection con = null;
-Statement stmt = null;
+Connection con = DBConnection.getConnection();
+PreparedStatement stmt = null;
 ResultSet rs = null;
-try{
-		con = DBConnection.getConnection();
-		stmt = con.createStatement();
-		String query = "select name, country, password from Users where email = '"+id+"' and password='"+pwd+"'";
-    query = query.replaceAll("['\"\\\\]", "\\\\$0");
-    System.out.println(query);
-		rs = stmt.executeQuery(query);
 
-		while(rs.next()) {
-		    System.out.println("Name="+rs.getString("name")+",country="+rs.getString("country")+",password="+rs.getString("password"));
-		}
+// Implements Valation Controls
+String id = validationControls(id);
+String pwd = validationControls(pwd);
+
+String name = "";
+String country = "";
+try{
+
+	// Implements Prepared Statements
+    stmt = con.prepareStatement("select name, country, password from Users where email = ? and password= ? ");  
+	stmt.setInt(1, id); 
+	stmt.setString(2, pwd);   
+	rs = stmt.executeUpdate(); 
+	
+	while (rs.next()) {
+		// Implements Valation Controls
+		name = validationControls(rs.getString("name"));
+		country = validationControls(rs.getString("country"));
+
+		System.out.println("Name="+name+",country="+country);
+	}
+
+} catch (SQLExecption ex) {
+        // Exception handling stuff
+
 }finally{
 		if(rs != null) rs.close();
-		stmt.close();
-		con.close();
+		if(stmt != null) stmt.close();
+		if(con != null) con.close();
 }

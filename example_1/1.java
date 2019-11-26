@@ -10,14 +10,14 @@ try {
 } catch (SQLExecption ex) {
         // Exception handling stuff
 } finally {
-    if (rs != null) {
+    if (results != null) {
         try {
             results.close();
         } catch (SQLException e) { 
             /* ignored */
         }
     }
-    if (ps != null) {
+    if (statement != null) {
         try {
             statement.close();
         } catch (SQLException e) { 
